@@ -13,7 +13,9 @@ XBoxコントローラーもしくは、それに対応するものでしか動�
 
 # 使用方法
 1.VibrationControllerと上記の使用ライブラリ(XInputDotNet)をDLします。
+
 2.UnityProjectを作成し、DLしたデータをAssetに入れてください。
+
 3.パッケージマネージャからInputSystemをインポートしてください。
 
 # 使用例

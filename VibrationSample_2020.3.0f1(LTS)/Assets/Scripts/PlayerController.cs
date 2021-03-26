@@ -4,11 +4,11 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Myspace.Vibrations;
 
-[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : CharacterBehabiour
 {
-    private InputAction m_move;
-    private InputAction m_shot;
+    [SerializeField] private InputReader m_input;
+    private float m_moveAmount;
+    private bool m_shot;
 
     [SerializeField] HertLayer[] m_hertLayers = null;
     [SerializeField] BulletController m_bullet = null;
@@ -46,10 +46,6 @@ public class PlayerController : CharacterBehabiour
 
     private void Start()
     {
-        var inputMap = GetComponent<PlayerInput>().currentActionMap;
-        m_move = inputMap["Move"];
-        m_shot = inputMap["Shot"];
-
         // 登録されている振動をコントローラーに使用可能にする
         if(m_hertLayers != null)
         {
@@ -98,8 +94,14 @@ public class PlayerController : CharacterBehabiour
 
         // 弾を発射
 
-        if (m_shot.triggered)
+        //if (m_shot.triggered)
+        //{
+        //    var bullet = Instantiate(m_bullet, transform.position, transform.rotation);
+        //    GameDirctor.Instans.AddBullet(bullet);
+        //}    
+        if (m_shot)
         {
+            m_shot = false;
             var bullet = Instantiate(m_bullet, transform.position, transform.rotation);
             GameDirctor.Instans.AddBullet(bullet);
         }
@@ -109,7 +111,7 @@ public class PlayerController : CharacterBehabiour
 
         var position = transform.position;
         float posX = position.x;
-        float inputX = m_move.ReadValue<float>();
+        float inputX = m_moveAmount;
         posX += inputX * Time.deltaTime * speed;
 
         if (posX < -sideSize)
@@ -144,6 +146,25 @@ public class PlayerController : CharacterBehabiour
             GameDirctor.Instans.ReMoveBullet(other.gameObject);
             Damage();
         }
+    }
+
+    private void OnEnable()
+    {
+        m_input.shotEvent += OnShot;
+        m_input.moveEvent += OnMove;
+    }
+    private void OnDisable()
+    {
+        m_input.shotEvent -= OnShot;
+        m_input.moveEvent -= OnMove;
+    }
+    private void OnMove(float move)
+    {
+        m_moveAmount = move;
+    }
+    private void OnShot()
+    {
+        m_shot = true;
     }
 }
 [System.Serializable]

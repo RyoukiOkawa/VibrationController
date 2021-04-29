@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="BulletController" Collapsed="true">
+    <Position X="11.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAg=</HashCode>
+      <FileName>Assets\Scripts\BulletController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CharacterBehabiour" Collapsed="true">
+    <Position X="7.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQCAAIAAAAAAAAEAAAAAAABAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Assets\Scripts\CharacterBehabiour.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EnemyController" Collapsed="true">
+    <Position X="8.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAACAAKAAAAAAAAEAAAAAAAQAAAAAQAAAAAYAABA=</HashCode>
+      <FileName>Assets\Scripts\EnemyController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameDirctor" Collapsed="true">
+    <Position X="13" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAgAAACCABFAIACAAAIAAEAAAAAEABAAAgAAQCAEA=</HashCode>
+      <FileName>Assets\Scripts\GameDirctor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlayerController" Collapsed="true">
+    <Position X="6.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAACAAKAEAAAgAAEAAAAIAAAAAAAAQACAAAYAAAA=</HashCode>
+      <FileName>Assets\Scripts\PlayerController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HertLayer" Collapsed="true">
+    <Position X="11.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAgAAAAAEAAACAAAAAAAAAAAIAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Assets\Scripts\PlayerController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Yu Gothic UI" Size="9" />
+</ClassDiagram>

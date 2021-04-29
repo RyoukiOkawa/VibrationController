@@ -16,18 +16,22 @@ namespace Myspace.Vibrations
         /// 現在の振動（毎フレーム更新していないとおかしくなるよ）
         /// </summary>
         public VibrationForce CurentForce { get; private set; } = VibrationForce.Zero;
+
         /// <summary>
         /// 登録してある振動対応コントローラー
         /// </summary>
         public GamePadState CurrentPad { get; private set; }
+
         /// <summary>
         /// 登録してある振動対応コントローラーナンバー
         /// </summary>
         private PlayerIndex m_playerIndex;
+
         ///<summary>
         ///どのくらい精密に振動の値を変動させるか
         ///</summary>
         private float m_vibrationAccuracy = 0.01f;
+
         /// <summary>
         /// 自動でLayerを削除するかどうか
         /// </summary>
@@ -36,10 +40,12 @@ namespace Myspace.Vibrations
 
         /// <summary>
         /// どのくらい精密に振動の値を変動させるか（デフォルトにしておきな）
-        /// <para>細かい（挙動が荒くなる）　０　～～～　１　荒い（挙動は安定）</para>
+        /// </summary>
+        /// <remarks>
+        /// 細かい（挙動が荒くなる）　０　～～～　１　荒い（挙動は安定)
         /// <para>変な値にしないように</para>
         /// <para>０～１の間で、勝手に保管するから関係ないけどね。</para>
-        /// </summary>
+        /// </remarks>
         public float VibrationAccuracy
         {
             get => m_vibrationAccuracy;
@@ -56,7 +62,6 @@ namespace Myspace.Vibrations
 
         /// <summary>
         /// 振動のON:OFF
-        /// 時間の加算は関係なく実行
         /// </summary>
         public bool Active
         {
@@ -104,6 +109,9 @@ namespace Myspace.Vibrations
         /// <summary>
         /// 振動コントローラー実働
         /// </summary>
+        /// <remarks>
+        /// レイヤーごとに値を算出、値が大きいものを保持→振動開始
+        /// </remarks>
         /// <param name="timeScale"></param>
         public void Update(float timeScale)
         {
@@ -197,7 +205,7 @@ namespace Myspace.Vibrations
         /// 該当するレイヤーがあれば返す。なければnullを返す
         /// </summary>
         /// <param name="layer">レイヤーナンバー</param>
-        /// <returns>値</returns>
+        /// <returns>該当レイヤー</returns>
         public VibrationLayer GetVibrationLayer(int layer)
         {
             bool contains = m_VibrationLayers.ContainsKey(layer);
@@ -377,11 +385,10 @@ namespace Myspace.Vibrations
         /// </summary>
         /// <param name="scriptable"></param>
         /// <returns>振動クラス（後で割合を変えたい時などは保持）</returns>
-        public Vibration AddVibration(ScriptableVibration scriptable)
+        public Vibration AddVibration(int layer,ScriptableVibration scriptable)
         {
             if (scriptable == null) return null;
 
-            int layer = scriptable.Layer;
             var vibration = new Vibration(scriptable, Percentage.Max);
 
             if (((m_VibrationLayers.ContainsKey(layer)) == false))
@@ -401,11 +408,10 @@ namespace Myspace.Vibrations
         /// <param name="scriptable"></param>
         /// <param name="percentage"></param>
         /// <returns>振動クラス（後で割合を変えたい時などは保持）</returns>
-        public Vibration AddVibration(ScriptableVibration scriptable, Percentage percentage)
+        public Vibration AddVibration(int layer,ScriptableVibration scriptable, Percentage percentage)
         {
             if (scriptable == null) return null;
 
-            int layer = scriptable.Layer;
             var vibration = new Vibration(scriptable, percentage);
 
             if (((m_VibrationLayers.ContainsKey(layer)) == false))
@@ -509,6 +515,10 @@ namespace Myspace.Vibrations
 
     #region VibrationLayer is class
 
+    /// <summary>
+    /// 振動のレイヤー
+    /// </summary>
+    /// <remarks>値のインスタンスをリストで管理する</remarks>
     public class VibrationLayer
     {
         // 力の演算元を格納
@@ -516,7 +526,6 @@ namespace Myspace.Vibrations
 
         /// <summary>
         /// レイヤーの振動の値適用のON:OFF
-        /// <para>（時間の加算は関係なく実行）</para>
         /// </summary>
         public bool Stop { get; set; } = false;
         /// <summary>
@@ -568,7 +577,7 @@ namespace Myspace.Vibrations
                 }
 
 
-                if(Active == false || vibration.Active == false)
+                if (Active == false || vibration.Active == false)
                 {
                     vibration.Time += timeScale;
                     continue;
@@ -582,7 +591,7 @@ namespace Myspace.Vibrations
                 vibration.Time += timeScale;
             }
 
-            return new VibrationForce(resultL,resultR);
+            return new VibrationForce(resultL, resultR);
         }
 
         /// <summary>

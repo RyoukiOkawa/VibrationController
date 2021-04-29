@@ -10,7 +10,7 @@ namespace Myspace.Vibrations
     public class Vibration
     {
         //力の値保持用
-        public readonly IVibration m_vibration;
+        public readonly VibrationParameter m_parameter;
 
 
         /// <summary>
@@ -35,27 +35,31 @@ namespace Myspace.Vibrations
         public bool Stop { get; set; } = false;
 
 
-        /// <summary>
-        /// コンストラクタ（割合は設定しないバージョン。(1,1)になります）
-        /// </summary>
-        /// <param name="vibration"></param>
-        public Vibration(IVibration vibration)
+        #region コンストラクタ
+
+        public Vibration(VibrationParameter parameter)
         {
-            this.m_vibration = vibration;
+            this.m_parameter = parameter;
             Percentage = Percentage.Max;
         }
-
-        /// <summary>
-        /// コンストラクタ
-        /// </summary>
-        /// <param name="vibration"></param>
-        /// <param name="percentage"></param>
-        public Vibration(IVibration vibration, Percentage percentage)
+        public Vibration(VibrationParameter parameter, Percentage percentage)
         {
-            this.m_vibration = vibration;
+            this.m_parameter = parameter;
             Percentage = percentage;
         }
 
+        public Vibration(ScriptableVibration scriptable)
+        {
+            this.m_parameter = scriptable.Parameter;
+            Percentage = Percentage.Max;
+        }
+        public Vibration(ScriptableVibration scriptable, Percentage percentage)
+        {
+            this.m_parameter = scriptable.Parameter;
+            Percentage = percentage;
+        }
+
+        #endregion
 
         /// <summary>
         /// レイヤーに追加されてから経過した時間における値を取得
@@ -63,8 +67,8 @@ namespace Myspace.Vibrations
         /// <returns>力の値</returns>
         public VibrationForce GetForce()
         {
-            if (m_vibration == null) return VibrationForce.Zero;
-            var force = m_vibration.GetVibrationForce(Time);
+            if (m_parameter == null) return VibrationForce.Zero;
+            var force = m_parameter.GetVibrationForce(Time);
 
             force *= Percentage;
             return force;
@@ -74,55 +78,119 @@ namespace Myspace.Vibrations
         /// レイヤーからの削除条件に達しているかチェック
         /// </summary>
         /// <returns>演算の結果</returns>
-        public bool FinishCheck() 
+        public bool FinishCheck()
         {
-            if (m_vibration == null)
+            if (m_parameter == null)
             {
                 Finish = true;
                 return true;
             }
 
-            bool finish = m_vibration.FinishCheck(Time);
+            bool finish = m_parameter.FinishCheck(Time);
             Finish = finish;
-            return finish; 
+            return finish;
         }
     }
 
-    #endregion 
-
-
-    #region IVibration is interface こいつを使って自分好みのやつを作ろう！！
-    public interface IVibration
-    {
-        /// <summary>振動が終わっているかどうかチェック</summary>
-        /// <param name="time">振動を始めてからの時間</param>
-        /// <returns>振動が終わっているかどうか</returns>
-        bool FinishCheck(float time);
-
-        /// <summary>力の値を獲得</summary>
-        /// <param name="time">振動を始まってからの時間</param>
-        /// <returns>力の値</returns>
-        VibrationForce GetVibrationForce(float time);
-    }
     #endregion
 
 
-    #region // ScriptableVibration is ScriptableObject as abstract class implements IVibration
-    /// <summary>
-    /// スクリプタブルオブジェクトのもとになるやつ
-    /// </summary>
-    public abstract class ScriptableVibration : ScriptableObject, IVibration
+    #region VibrationParameter is class
+
+    [System.Serializable]
+    public class VibrationParameter
     {
-        //優先度
-        [Header("レイヤーナンバー")][SerializeField] int m_layer;
-        public int Layer { get => m_layer; }
-        protected virtual void Reset()
+        [SerializeField,Header("左右の値を同じにするか")] bool m_twoSideEqual = true;
+        [SerializeReference, SubclassSelector,Header("左の値")] IVibrationValue m_leftValue;
+        [SerializeReference, SubclassSelector,Header("右の値")] IVibrationValue m_rightValue;
+
+
+        public bool TwoSideEqual { get => m_twoSideEqual; internal set => m_twoSideEqual = value; }
+
+        public IVibrationValue LeftValue { get => m_leftValue; set => m_leftValue = value; }
+        public IVibrationValue RightValue { get => m_rightValue; set => m_rightValue = value; }
+
+
+        public VibrationParameter(IVibrationValue vibrationValue)
         {
-            m_layer = 0;
+            m_leftValue =
+                m_rightValue = vibrationValue;
+
+            m_twoSideEqual = true;
         }
-        public abstract VibrationForce GetVibrationForce(float time);
-        public abstract bool FinishCheck(float time);
+
+        public VibrationParameter(IVibrationValue leftVibrationValue, IVibrationValue rightVibrationValue)
+        {
+            if (leftVibrationValue == rightVibrationValue)
+            {
+                m_leftValue =
+                    m_rightValue = leftVibrationValue;
+
+                m_twoSideEqual = true;
+            }
+            else
+            {
+                m_leftValue = leftVibrationValue;
+                m_rightValue = rightVibrationValue;
+
+                m_twoSideEqual = false;
+            }
+        }
+
+        public void ValueUpdate()
+        {
+            if (m_leftValue is IAdjust leftAdjust)
+            {
+                leftAdjust.ValueUpdate();
+            }
+            if (m_rightValue is IAdjust RightAdjust)
+            {
+                RightAdjust.ValueUpdate();
+            }
+        }
+
+        public VibrationForce GetVibrationForce(float time)
+        {
+            var result = VibrationForce.Zero;
+
+            if (!m_twoSideEqual)
+            {
+                result.Left = m_leftValue.GetVibrationForce(time);
+                result.Right = m_rightValue.GetVibrationForce(time);
+            }
+            else
+            {
+                result = new VibrationForce(m_leftValue.GetVibrationForce(time));
+            }
+
+            return result;
+        }
+
+        public bool FinishCheck(float time)
+        {
+            bool result;
+
+            if (m_twoSideEqual)
+            {
+                result = m_leftValue != null ?
+                    m_leftValue.FinishCheck(time) : true;
+            }
+            else
+            {
+                bool left = m_leftValue != null ?
+                    m_leftValue.FinishCheck(time) : true;
+
+                bool right = m_rightValue != null ?
+                    m_rightValue.FinishCheck(time) : true;
+
+                result = (left && right);
+            }
+
+            return result;
+        }
     }
+
+
     #endregion
 
 
@@ -134,7 +202,7 @@ namespace Myspace.Vibrations
     [System.Serializable]
     public struct Percentage
     {
-        [SerializeField,Range(0,1)] float m_right;
+        [SerializeField, Range(0, 1)] float m_right;
         [SerializeField, Range(0, 1)] float m_left;
 
         public float Left
@@ -204,12 +272,12 @@ namespace Myspace.Vibrations
         /// <summary>
         /// 割合が最小の状態を返す（０）
         /// </summary>
-        public static Percentage Zero { get; } = new Percentage(0,0);
+        public static Percentage Zero { get; } = new Percentage(0, 0);
 
         /// <summary>
         /// 割合が最大の状態を返す（１）
         /// </summary>
-        public static Percentage Max { get; } = new Percentage(1,1);
+        public static Percentage Max { get; } = new Percentage(1, 1);
 
         /// <summary>
         /// 平均値を出す
@@ -391,7 +459,7 @@ namespace Myspace.Vibrations
             }
         }
 
-        public VibrationForce(float left,float right)
+        public VibrationForce(float left, float right)
         {
             this.m_left = 0;
             this.m_right = 0;
@@ -429,7 +497,7 @@ namespace Myspace.Vibrations
         /// <returns>平均値</returns>
         public static VibrationForce GetAverage(params VibrationForce[] forces)
         {
-            if(forces == null)
+            if (forces == null)
             {
                 return VibrationForce.Zero;
             }
@@ -437,7 +505,7 @@ namespace Myspace.Vibrations
             var forceCount = forces.Length;
             float resultL = 0;
             float resultR = 0;
-            for(int i = 0;i < forceCount; i++)
+            for (int i = 0; i < forceCount; i++)
             {
                 var force = forces[i];
                 resultL += force.m_left;
@@ -468,11 +536,11 @@ namespace Myspace.Vibrations
             for (int i = 0; i < forceCount; i++)
             {
                 var force = forces[i];
-                if(resultL < force.m_left)
+                if (resultL < force.m_left)
                 {
                     resultL = force.m_left;
                 }
-                if(resultR < force.m_right)
+                if (resultR < force.m_right)
                 {
                     resultR = force.m_right;
                 }
@@ -509,7 +577,7 @@ namespace Myspace.Vibrations
             }
             return new VibrationForce(resultL, resultR);
         }
-        
+
         /// <summary>
         /// 力が最小の状態を返す（０）
         /// </summary>

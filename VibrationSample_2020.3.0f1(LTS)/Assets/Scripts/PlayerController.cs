@@ -132,7 +132,7 @@ public class PlayerController : CharacterBehabiour
     }
     public override void Damage()
     {
-        GameDirctor.Instans.Controls.AddVibration(m_damageVibration);
+        GameDirctor.Instans.Controls.AddVibration(0,m_damageVibration);
         m_hp--;
         HertChange();
     }

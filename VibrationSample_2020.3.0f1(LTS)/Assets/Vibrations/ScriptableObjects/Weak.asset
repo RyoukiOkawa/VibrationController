@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bb998e553609dc0468c375bf41dd23e4, type: 3}
-  m_Name: Damage
+  m_Name: Weak
   m_EditorClassIdentifier: 
   m_parameter:
     m_twoSideEqual: 1
@@ -27,35 +27,44 @@ MonoBehaviour:
           serializedVersion: 2
           m_Curve:
           - serializedVersion: 3
-            time: -0.0021956312
-            value: 0.94963646
-            inSlope: -0.08177164
-            outSlope: -0.08177164
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
             tangentMode: 0
             weightedMode: 0
             inWeight: 0
-            outWeight: 0.92600405
+            outWeight: 0
           - serializedVersion: 3
-            time: 0.15605739
-            value: 0.8094641
-            inSlope: -3.4929833
-            outSlope: -3.4929833
+            time: 0.4293175
+            value: 0
+            inSlope: 0.005895804
+            outSlope: 0.005895804
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0.33333334
+            outWeight: 1
+          - serializedVersion: 3
+            time: 0.5111329
+            value: 0.10005553
+            inSlope: 0
+            outSlope: 0
             tangentMode: 0
             weightedMode: 0
             inWeight: 0.33333334
             outWeight: 0.33333334
           - serializedVersion: 3
-            time: 0.2686753
-            value: 0.0036309469
-            inSlope: -0.03078066
-            outSlope: -0.03078066
+            time: 0.6055289
+            value: 0
+            inSlope: -0.0061356337
+            outSlope: -0.0061356337
             tangentMode: 0
             weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.16270891
+            inWeight: 0.32020947
+            outWeight: 0.19628318
           - serializedVersion: 3
-            time: 0.6131592
-            value: 0.0010070801
+            time: 1
+            value: 0
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -65,4 +74,4 @@ MonoBehaviour:
           m_PreInfinity: 1
           m_PostInfinity: 1
           m_RotationOrder: 4
-        m_roundCount: 1
+        m_roundCount: 0

@@ -9,9 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b403994fcc309f4a8f458650e9f86b5, type: 3}
+  m_Script: {fileID: 11500000, guid: bb998e553609dc0468c375bf41dd23e4, type: 3}
   m_Name: None
   m_EditorClassIdentifier: 
-  m_layer: 0
-  m_vibrationForce: 0
-  m_vibrationTime: 0
+  m_parameter:
+    m_twoSideEqual: 1
+    m_leftValue:
+      id: 0
+    m_rightValue:
+      id: 0
+  references:
+    version: 1
+    00000000:
+      type: {class: MonotonyVibration, ns: Myspace.Vibrations, asm: Assembly-CSharp}
+      data:
+        m_vibrationTime: 0
+        m_value: 0

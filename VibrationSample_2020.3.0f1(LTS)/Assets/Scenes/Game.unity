@@ -397,14 +397,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d228d604aa261a54c8ea87dd931becf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_hpLimmit: 5
+  m_hpLimmit: 10
   m_hertLayers:
   - m_hertChange: 0
-    m_vibration: {fileID: 11400000, guid: 6b81fa989e995464fb3552578e5b4201, type: 2}
-  - m_hertChange: 3
-    m_vibration: {fileID: 11400000, guid: d9e34dfd5e53a7e4bb3dae154a2f3e26, type: 2}
+    m_vibration: {fileID: 11400000, guid: 97408c7b4fdc03848b89e68e083811d4, type: 2}
   - m_hertChange: 5
-    m_vibration: {fileID: 11400000, guid: 7b485dd8632f8e24aa18312cef16fc18, type: 2}
+    m_vibration: {fileID: 11400000, guid: 9b1e71f07409e1b40b830dd84ea11d8e, type: 2}
+  - m_hertChange: 10
+    m_vibration: {fileID: 11400000, guid: 7a10974467a1a284ca5f354450ade607, type: 2}
   m_bullet: {fileID: 9119952407231777534, guid: 34a20a12cf39d3343bc42b6a2033b99f, type: 3}
   m_damageVibration: {fileID: 11400000, guid: b7da9cbacabfdd34d878fc87c4f500fc, type: 2}
 --- !u!54 &1188346826

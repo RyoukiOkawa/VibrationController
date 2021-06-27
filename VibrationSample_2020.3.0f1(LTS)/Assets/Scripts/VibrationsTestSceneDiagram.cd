@@ -1,45 +1,110 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="BulletController" Collapsed="true">
-    <Position X="11.25" Y="1.25" Width="1.5" />
+    <Position X="15" Y="10" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ABAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAg=</HashCode>
       <FileName>Assets\Scripts\BulletController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CharacterBehabiour" Collapsed="true">
-    <Position X="7.75" Y="1.25" Width="1.5" />
+    <Position X="9.75" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAQCAAIAAAAAAAAEAAAAAAABAAAAAAAAAAAIAAAA=</HashCode>
       <FileName>Assets\Scripts\CharacterBehabiour.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="EnemyController" Collapsed="true">
-    <Position X="8.75" Y="2.75" Width="1.5" />
+  <Class Name="EnemyController">
+    <Position X="13" Y="6.5" Width="1.5" />
+    <InheritanceLine Type="CharacterBehabiour" FixedToPoint="true">
+      <Path>
+        <Point X="10.5" Y="5.441" />
+        <Point X="10.5" Y="6.125" />
+        <Point X="13.375" Y="6.125" />
+        <Point X="13.375" Y="6.5" />
+      </Path>
+    </InheritanceLine>
+    <AssociationLine Name="m_bullet" Type="BulletController" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="14.5" Y="8.015" />
+        <Point X="16.125" Y="8.015" />
+        <Point X="16.125" Y="10" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.098" Y="0.922" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>ABAAAACAAKAAAAAAAAEAAAAAAAQAAAAAQAAAAAYAABA=</HashCode>
       <FileName>Assets\Scripts\EnemyController.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_bullet" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="GameDirctor" Collapsed="true">
-    <Position X="13" Y="1.25" Width="1.5" />
+  <Class Name="GameDirctor">
+    <Position X="4" Y="4" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQAgAAACCABFAIACAAAIAAEAAAAAEABAAAgAAQCAEA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Assets\Scripts\GameDirctor.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="PlayerController" Collapsed="true">
-    <Position X="6.5" Y="2.75" Width="1.5" />
+  <Class Name="PlayerController">
+    <Position X="7" Y="6.5" Width="1.75" />
+    <AssociationLine Name="m_bullet" Type="BulletController" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="8.75" Y="7.595" />
+        <Point X="12.75" Y="7.595" />
+        <Point X="12.75" Y="9.75" />
+        <Point X="15.438" Y="9.75" />
+        <Point X="15.438" Y="10" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="4.612" Y="2.146" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="m_damageVibration" Type="Myspace.Vibrations.ScriptableVibration" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="8.75" Y="8.752" />
+        <Point X="11" Y="8.752" />
+        <Point X="11" Y="9.5" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>IAAAAACAAKAEAAAgAAEAAAAIAAAAAAAAQACAAAYAAAA=</HashCode>
       <FileName>Assets\Scripts\PlayerController.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_bullet" />
+      <Field Name="m_damageVibration" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Field Name="m_hertLayers" />
+    </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="HertLayer" Collapsed="true">
-    <Position X="11.25" Y="2.25" Width="1.5" />
+  <Class Name="HertLayer">
+    <Position X="7.25" Y="11" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAEAgAAAAAEAAACAAAAAAAAAAAIAAAAAAAAACAAAAA=</HashCode>
       <FileName>Assets\Scripts\PlayerController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_vibration" />
+      <Field Name="m_vibrationInstans" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Myspace.Vibrations.ScriptableVibration">
+    <Position X="10.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEAAAAAABAQAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Vibrations\Scripts\ScriptableVibration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Myspace.Vibrations.Vibration">
+    <Position X="15.5" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAABgAAAAgIAAAAgAAAQg=</HashCode>
+      <FileName>Assets\Vibrations\Scripts\Vibrations.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Yu Gothic UI" Size="9" />

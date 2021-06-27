@@ -8,7 +8,7 @@ using Myspace.Vibrations;
 public class PlayerController : CharacterBehabiour
 {
     private InputAction m_move;
-    private InputAction m_shot;
+    private InputAction m_shot; 
 
     [SerializeField] HertLayer[] m_hertLayers = null;
     [SerializeField] BulletController m_bullet = null;

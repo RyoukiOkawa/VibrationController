@@ -1,19 +1,18 @@
-using System.Collections;
+using Myspace.Vibrations;
 using System.Collections.Generic;
 using UnityEngine;
-using Myspace.Vibrations;
 
 public class GameDirctor : MonoBehaviour
 {
 
-    public static int HertLayer = 0; 
-    public static int DamadeLayer = 1; 
-    public static int ShotLayer = 2; 
+    public static int HertLayer = 0;
+    public static int DamadeLayer = 1;
+    public static int ShotLayer = 2;
     public static GameDirctor Instans { get; private set; } = null;
     public VibrationsControls Controls { get; private set; } = null;
 
-    public PlayerController PlayerController { get;private set; } = null;
-    public EnemyController EnemyController { get;private set; } = null;
+    public PlayerController PlayerController { get; private set; } = null;
+    public EnemyController EnemyController { get; private set; } = null;
 
     private List<BulletController> m_bullets = new List<BulletController>(16);
 
@@ -24,8 +23,8 @@ public class GameDirctor : MonoBehaviour
     public void ReMoveBullet(GameObject @object)
     {
         var mach = m_bullets.Find(bullet => bullet.gameObject == @object);
-        
-        if(mach != null)
+
+        if (mach != null)
         {
             m_bullets.Remove(mach);
             Destroy(mach.gameObject);
@@ -34,14 +33,16 @@ public class GameDirctor : MonoBehaviour
     public void AddBullet(BulletController bullet)
     {
         if (bullet == null)
+        {
             return;
+        }
 
         m_bullets.Add(bullet);
     }
 
-    [Header("‰¡‚ÌˆÚ“®‰Â“®ˆæ")][SerializeField][Range(1,10)] float m_sideLimmit = 1;
-    [Header("Player‚ÆEnemy‚ÌˆÚ“®‘¬“x")][SerializeField][Range(1,10)] float m_moveSpeed = 1;
-    [Header("Player‚ÆEnemy‚Ì’e‚Ì‘¬“x")] [SerializeField][Range(1,10)] float m_bulettSpeed = 1;
+    [Header("‰¡‚ÌˆÚ“®‰Â“®ˆæ")] [SerializeField] [Range(1, 10)] float m_sideLimmit = 1;
+    [Header("Player‚ÆEnemy‚ÌˆÚ“®‘¬“x")] [SerializeField] [Range(1, 10)] float m_moveSpeed = 1;
+    [Header("Player‚ÆEnemy‚Ì’e‚Ì‘¬“x")] [SerializeField] [Range(1, 10)] float m_bulettSpeed = 1;
 
     // Start is called before the first frame update
     private void Awake()
@@ -77,7 +78,7 @@ public class GameDirctor : MonoBehaviour
         var playerDied = PlayerController.Died();
         var enmyDied = EnemyController.Died();
 
-        if(playerDied || enmyDied)
+        if (playerDied || enmyDied)
         {
             // hp‚ª‚È‚­‚È‚Á‚½‚ç“§–¾‚É
 
@@ -100,7 +101,7 @@ public class GameDirctor : MonoBehaviour
         {
             // “G‚ÆPlayer‚ÌˆÚ“®
 
-            PlayerController.Move(m_sideLimmit,m_moveSpeed);
+            PlayerController.Move(m_sideLimmit, m_moveSpeed);
             EnemyController.Move(m_sideLimmit, m_moveSpeed);
         }
 
@@ -109,10 +110,10 @@ public class GameDirctor : MonoBehaviour
 
         float speed = m_bulettSpeed * Time.deltaTime;
         var cnt = m_bullets.Count;
-        
+
         if (cnt != 0)
         {
-            for(int i = 0;i < cnt; i++)
+            for (int i = 0; i < cnt; i++)
             {
                 var bullet = m_bullets[i];
                 bullet.Move(speed);
@@ -129,5 +130,89 @@ public class GameDirctor : MonoBehaviour
     private void LateUpdate()
     {
         Controls.Update(Time.deltaTime);
+    }
+
+#if UNITY_EDITOR
+
+
+    #region GUIŠÖŒW
+    private bool gm_useGUI = false;
+    private bool gm_virtualActiveVibrationa;
+
+
+    private void OnGUI()
+    {
+        Rect boxRect = new Rect(0, 0, 200, 20);
+
+        Rect anyGuiRect = new Rect(0, 0, 200, 20);
+
+        string toggleMesage = gm_useGUI ? "GUI‚ð•Â‚¶‚é" : "GUI‚ð•\Ž¦‚·‚é";
+        gm_useGUI = GUI.Toggle(anyGuiRect, gm_useGUI, toggleMesage);
+
+        var force = Controls.CurentForce;
+        anyGuiRect.y += 20;
+
+        GUI.HorizontalSlider(anyGuiRect, force.Left, 0, 1);
+
+        anyGuiRect.y += 20;
+
+        GUI.HorizontalSlider(anyGuiRect, force.Right, 0, 1);
+
+        UnityEditor.EditorGUILayout.CurveField(AnimationCurve.Linear(0, 0, 1, 0));
+
+        boxRect.height += anyGuiRect.y;
+
+        GUI.Box(boxRect, "");
+    }
+    #endregion
+#endif
+}
+namespace Myspace 
+{
+    using System;
+    using System.Linq;
+    using System.Collections.Generic;
+
+    public static partial class EX
+    {
+        public static bool Between(this IComparable value, IComparable min, IComparable max)
+        {
+            if (value.CompareTo(min) < 0)
+                return false;
+
+            if (value.CompareTo(max) > 0)
+                return false;
+
+
+            return true;
+        }
+
+        public static T In<T>(this T[] value, params T[] founder)
+        {
+            List<T> ts = value.ToList();
+
+            int length = founder.Length;
+
+            for (int i = 0; i < founder.Length; i++)
+            {
+                ts.
+            }
+        }
+
+    }
+
+
+    public class Tester
+    {
+        public void Test()
+        {
+            int[] values =
+            {
+                0,1,2,3,4,5
+            };
+
+            var result = values.Where(value => value.Between(2, 4))
+                .Select
+        }
     }
 }

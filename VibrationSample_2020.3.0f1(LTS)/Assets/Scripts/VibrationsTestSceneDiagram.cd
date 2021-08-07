@@ -42,13 +42,6 @@
       <Field Name="m_bullet" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="GameDirctor">
-    <Position X="4" Y="4" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\Scripts\GameDirctor.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="PlayerController">
     <Position X="7" Y="6.5" Width="1.75" />
     <AssociationLine Name="m_bullet" Type="BulletController" FixedFromPoint="true" FixedToPoint="true">
@@ -105,6 +98,13 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAABgAAAAgIAAAAgAAAQg=</HashCode>
       <FileName>Assets\Vibrations\Scripts\Vibrations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameDirctor">
+    <Position X="4" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAgAAECCABFAIACAAAIAAEAAAAAEABAACgAAQKAEA=</HashCode>
+      <FileName>Assets\Scripts\GameDirctor.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Yu Gothic UI" Size="9" />

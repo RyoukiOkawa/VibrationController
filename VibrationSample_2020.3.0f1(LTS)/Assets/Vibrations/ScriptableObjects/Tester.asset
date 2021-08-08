@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Tester
   m_EditorClassIdentifier: 
   m_parameter:
-    m_endTime: 4.14
+    m_endTime: 2.13
     m_endMode: 3
     m_twoSideEqual: 0
     m_leftValue:
@@ -38,17 +38,8 @@ MonoBehaviour:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.105677426
-            value: 0
-            inSlope: 0.001695125
-            outSlope: 0.001695125
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.50399065
-          - serializedVersion: 3
-            time: 0.18107706
-            value: 0.18990998
+            time: 0.5513889
+            value: 0.04210526
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -56,16 +47,7 @@ MonoBehaviour:
             inWeight: 0.33333334
             outWeight: 0.33333334
           - serializedVersion: 3
-            time: 0.2658677
-            value: 0
-            inSlope: 0.004954331
-            outSlope: 0.004954331
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.18741615
-          - serializedVersion: 3
-            time: 0.3522339
+            time: 1
             value: 0
             inSlope: 0
             outSlope: 0
@@ -76,7 +58,7 @@ MonoBehaviour:
           m_PreInfinity: 1
           m_PostInfinity: 1
           m_RotationOrder: 4
-        m_roundCount: 3
+        m_roundCount: 0
     00000001:
       type: {class: CurveVibration, ns: Myspace.Vibrations, asm: Assembly-CSharp}
       data:
@@ -84,17 +66,8 @@ MonoBehaviour:
           serializedVersion: 2
           m_Curve:
           - serializedVersion: 3
-            time: -0.061157882
-            value: 0.0032653809
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.33333334
-          - serializedVersion: 3
-            time: 0.062438965
-            value: 0.0032653809
+            time: 0
+            value: 0
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -102,8 +75,8 @@ MonoBehaviour:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 1.0265151
-            value: 0.052208863
+            time: 0.5513889
+            value: 0.04210526
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -111,8 +84,8 @@ MonoBehaviour:
             inWeight: 0.33333334
             outWeight: 0.33333334
           - serializedVersion: 3
-            time: 1.062439
-            value: 0.0032653809
+            time: 1
+            value: 0
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -122,4 +95,4 @@ MonoBehaviour:
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
-        m_roundCount: 3
+        m_roundCount: 0

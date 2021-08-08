@@ -6,14 +6,10 @@ using UnityEngine;
 public abstract class CharacterBehabiour : MonoBehaviour
 {
     protected int m_hp;
-    [SerializeField] protected int m_hpLimmit;
+    [SerializeField,Min(1)] protected int m_hpLimmit;
 
     protected virtual void OnValidate()
     {
-        if(m_hpLimmit < 1)
-        {
-            m_hpLimmit = 1;
-        }
         m_hp = m_hpLimmit;
     }
 

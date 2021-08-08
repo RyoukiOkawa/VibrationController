@@ -33,17 +33,8 @@ namespace Myspace.Vibrations
 
             m_twoSideEqual = true;
 
-            switch (endMode)
-            {
-                case VibrationEndMode.TwoSide:
-                case VibrationEndMode.Left:
-                case VibrationEndMode.Right:
-                    m_endMode = VibrationEndMode.Left;
-                    break;
-                default:
-                    m_endMode = endMode;
-                    break;
-            }
+            m_endMode = endMode;
+
             if (endTime is float time)
             {
                 m_endTime = time;
@@ -64,7 +55,7 @@ namespace Myspace.Vibrations
                     case VibrationEndMode.TwoSide:
                     case VibrationEndMode.Left:
                     case VibrationEndMode.Right:
-                        m_endMode = VibrationEndMode.Left;
+                        m_endMode = VibrationEndMode.Single;
                         break;
                     default:
                         m_endMode = endMode;
@@ -142,6 +133,7 @@ namespace Myspace.Vibrations
                     result = (left && right);
                     break;
                 case VibrationEndMode.Left:
+                case VibrationEndMode.Single:
                     result = left;
                     break;
                 case VibrationEndMode.Right:
@@ -158,6 +150,7 @@ namespace Myspace.Vibrations
         TwoSide,
         Left,
         Right,
+        Single,
         Custom,
         Infinite
     }

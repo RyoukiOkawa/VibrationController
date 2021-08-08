@@ -94,6 +94,7 @@ namespace Myspace.Vibrations
 
     #endregion
 
+
     #region // Percentage is struct
 
     /// <summary>

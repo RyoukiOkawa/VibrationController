@@ -17,11 +17,11 @@ public class VibrationParameterDrawer : PropertyDrawer
 
     Type propertyType;
 
-    FieldInfo twoSideEqual;
-    FieldInfo leftValue;
-    FieldInfo rightValue;
-    FieldInfo endMode;
-    FieldInfo endTime;
+    FieldInfo fieldTwoSideEqual;
+    FieldInfo fieldLeftValue;
+    FieldInfo fieldRightValue;
+    FieldInfo fieldEndMode;
+    FieldInfo fieldEndTime;
 
     SerializedProperty serializedTwoEqual;
     SerializedProperty serializedLeftValue;
@@ -41,11 +41,11 @@ public class VibrationParameterDrawer : PropertyDrawer
 
         init = true;
 
-        twoSideEqual = propertyType.GetField("m_twoSideEqual", priveteFlags);
-        leftValue = propertyType.GetField("m_leftValue", priveteFlags);
-        rightValue = propertyType.GetField("m_rightValue", priveteFlags);
-        endMode = propertyType.GetField("m_endMode", priveteFlags);
-        endTime = propertyType.GetField("m_endTime", priveteFlags);
+        fieldTwoSideEqual = propertyType.GetField("m_twoSideEqual", priveteFlags);
+        fieldLeftValue = propertyType.GetField("m_leftValue", priveteFlags);
+        fieldRightValue = propertyType.GetField("m_rightValue", priveteFlags);
+        fieldEndMode = propertyType.GetField("m_endMode", priveteFlags);
+        fieldEndTime = propertyType.GetField("m_endTime", priveteFlags);
 
         serializedTwoEqual = property.FindPropertyRelative("m_twoSideEqual");
         serializedLeftValue = property.FindPropertyRelative("m_leftValue");
@@ -53,6 +53,8 @@ public class VibrationParameterDrawer : PropertyDrawer
         serializedEndMode = property.FindPropertyRelative("m_endMode");
         serializedEndTime = property.FindPropertyRelative("m_endTime");
     }
+
+    #region main GUI methods
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
@@ -70,97 +72,178 @@ public class VibrationParameterDrawer : PropertyDrawer
         EditorGUI.EndProperty();
     }
 
+
     private void HeaderGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
     }
 
+
     private void BodyGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        var beforeIndent = EditorGUI.indentLevel;
-
         parametorOpen = EditorGUILayout.Foldout(parametorOpen, "VibrationParameter");
 
         if (parametorOpen)
         {
-
-            EditorGUI.indentLevel++;
-
-            var beforTwoSideEqual = (bool)twoSideEqual.GetValue(mainProperty);
-
-            EditorGUILayout.PropertyField(serializedTwoEqual);
-
-            
-
-            if ((bool)twoSideEqual.GetValue(mainProperty))
-            {
-                EditorGUILayout.PropertyField(serializedLeftValue, new GUIContent("両辺の値"), null);
-
-                if (GUILayout.Button("値を別々する"))
-                {
-                    SeparateValues();
-                }
-
-                position.y += EditorGUI.GetPropertyHeight(serializedLeftValue, includeChildren : true);
-
-            }
-            else
-            {
-                if (beforTwoSideEqual)
-                {
-                    SeparateValues();
-                }
-
-                EditorGUILayout.PropertyField(serializedLeftValue, new GUIContent("左辺の値"), null);
-                EditorGUILayout.PropertyField(serializedRightValue, new GUIContent("右辺の値"), null);
-
-                EditorGUILayout.BeginHorizontal();
-
-
-
-                if (GUILayout.Button("値を同じにする(左優先)"))
-                {
-                    twoSideEqual.SetValue(mainProperty, true);
-
-                    rightValue.SetValue(mainProperty, null);
-                }
-
-                if (GUILayout.Button("値を同じにする(右優先)"))
-                {
-                    twoSideEqual.SetValue(mainProperty, true);
-
-                    leftValue.SetValue(
-                        mainProperty,
-                        rightValue.GetValue(mainProperty)
-                        );
-
-                    rightValue.SetValue(mainProperty, null);
-                }
-
-                EditorGUILayout.EndHorizontal();
-            }
-
-            EditorGUILayout.PropertyField(serializedEndTime, new GUIContent("EndTime"), null);
-            EditorGUILayout.PropertyField(serializedEndMode, new GUIContent("EndMode"), null);
-            EditorGUI.indentLevel = beforeIndent;
+            PropertySerializedGUI();
         }
     }
+
+
+    #endregion
+
+
+    #region Sub GUI methods
+
+
+    private void PropertySerializedGUI()
+    {
+        EditorGUI.indentLevel++;
+
+        EditorGUILayout.PropertyField(serializedTwoEqual);
+
+        if ((bool)fieldTwoSideEqual.GetValue(mainProperty))
+        {
+            SingleValueSerializedGUI();
+        }
+        else
+        {
+            TwoValueSerializedGUI();
+        }
+
+        EndModeSerializedGUI();
+        EndTimeSerializedGUI();
+
+        EditorGUI.indentLevel--;
+    }
+
+
+    private void SingleValueSerializedGUI()
+    {
+        EditorGUILayout.PropertyField(serializedLeftValue, new GUIContent("両辺の値"), options : null);
+
+        EditorGUI.indentLevel++;
+
+        if (GUILayout.Button("値を別々する"))
+        {
+            SeparateValues();
+        }
+
+        EditorGUI.indentLevel--;
+    }
+
+
+    private void TwoValueSerializedGUI()
+    {
+
+        EditorGUILayout.PropertyField(serializedLeftValue, new GUIContent("左辺の値"),options : null);
+        EditorGUILayout.PropertyField(serializedRightValue, new GUIContent("右辺の値"),options : null);
+
+        EditorGUI.indentLevel++;
+
+        EditorGUILayout.BeginHorizontal();
+
+        if (GUILayout.Button("値を同じにする(左優先)"))
+        {
+            EqualsValuesBaseLeft();
+        }
+
+        if (GUILayout.Button("値を同じにする(右優先)"))
+        {
+            EqualsValuesBaseRight();
+        }
+
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUI.indentLevel--;
+    }
+
+    private void EndModeSerializedGUI()
+    {
+        EditorGUILayout.PropertyField(serializedEndMode, new GUIContent("EndMode"), options : null);
+
+        var endMode = (VibrationEndMode)fieldEndMode.GetValue(mainProperty);
+
+        var values = Enum.GetValues(typeof(VibrationEndMode));
+
+        EditorGUI.indentLevel++;
+
+        foreach(VibrationEndMode value in values)
+        {
+            var mach = (endMode == value);
+
+            var check = EditorGUILayout.ToggleLeft(new GUIContent(value.ToString()), mach,options : null);
+
+            if(check && (mach == false))
+            {
+                fieldEndMode.SetValue(mainProperty, value);
+            }
+        }
+
+        EditorGUI.indentLevel--;
+    }
+
+    private void EndTimeSerializedGUI()
+    {
+        var serializedName = "EndTime";
+
+        EditorGUILayout.PropertyField(serializedEndTime, new GUIContent("EndTime"), options: null);
+
+        var endMode = (VibrationEndMode)fieldEndMode.GetValue(mainProperty);
+
+        
+
+        if (endMode == VibrationEndMode.Custom)
+        {
+            EditorGUILayout.PropertyField(serializedEndTime, options: null);
+        }
+        else
+        {
+            EditorGUILayout.BeginHorizontal();
+
+            EditorGUILayout.LabelField(serializedName);
+
+            if (endMode == VibrationEndMode.Infinite)
+            {
+                EditorGUILayout.LabelField("Infinite : ∞");
+            }
+
+            EditorGUILayout.EndHorizontal();
+        }
+
+    }
+
+    #endregion
 
 
     #region operator methods
 
     private void SeparateValues()
     {
-        twoSideEqual.SetValue(mainProperty, false);
+        fieldTwoSideEqual.SetValue(mainProperty, false);
 
         var iType = typeof(IVibrationValue);
         MethodInfo info = iType.GetMethod("CreateOrigin");
+        var copyValue = info.Invoke(fieldLeftValue.GetValue(mainProperty),parameters : null);
 
+        fieldRightValue.SetValue(mainProperty,copyValue);
+    }
 
-        rightValue.SetValue(
-            mainProperty,
-            info.Invoke(leftValue.GetValue(mainProperty), null)
-            );
+    private void EqualsValuesBaseLeft()
+    {
+        fieldTwoSideEqual.SetValue(mainProperty, true);
+
+        fieldRightValue.SetValue(mainProperty,value : null);
+    }
+
+    private void EqualsValuesBaseRight()
+    {
+        fieldTwoSideEqual.SetValue(mainProperty, true);
+
+        var rightValue = fieldRightValue.GetValue(mainProperty);
+
+        fieldLeftValue.SetValue(mainProperty,rightValue);
+        fieldRightValue.SetValue(mainProperty,value : null);
     }
 
     #endregion

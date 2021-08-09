@@ -9,6 +9,8 @@ namespace Myspace.Vibrations
     /// </summary>
     public interface IVibrationValue
     {
+        float? EndTime { get; }
+
         /// <summary>振動が終わっているかどうかチェック</summary>
         /// <param name="time">振動を始めてからの時間</param>
         /// <returns>振動が終わっているかどうか</returns>
@@ -24,5 +26,9 @@ namespace Myspace.Vibrations
         /// </summary>
         /// <returns>インスタンス</returns>
         IVibrationValue CreateOrigin();
+
+        
+
+        IVibrationValue DefaultInstance();
     }
 }

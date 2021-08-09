@@ -14,6 +14,19 @@ namespace Myspace.Vibrations
         public float RastFrameTime { get; private set; }
         public int RoundCount { get => m_roundCount; set => m_roundCount = value; }
 
+        public float? EndTime
+        {
+            get
+            {
+                if (m_curve == null)
+                    return null;
+
+                var keys = m_curve.keys;
+                var lastKey = keys[keys.Length - 1];
+
+                return lastKey.time;
+            }
+        }
 
         public CurveVibration()
         {
@@ -94,6 +107,11 @@ namespace Myspace.Vibrations
         public bool FinishCheck(float time)
         {
             return (!(m_roundCount == 0)) && (time > m_roundCount * RastFrameTime);
+        }
+
+        public IVibrationValue DefaultInstance()
+        {
+            return new CurveVibration();
         }
         public IVibrationValue CreateOrigin()
         {

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_parameter:
     m_endTime: 2.13
-    m_endMode: 3
+    m_endMode: 1
     m_twoSideEqual: 0
     m_leftValue:
       id: 0
@@ -37,15 +37,6 @@ MonoBehaviour:
             weightedMode: 0
             inWeight: 0
             outWeight: 0
-          - serializedVersion: 3
-            time: 0.5513889
-            value: 0.04210526
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0.33333334
           - serializedVersion: 3
             time: 1
             value: 0
@@ -75,8 +66,8 @@ MonoBehaviour:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.5513889
-            value: 0.04210526
+            time: 0.49584693
+            value: 0.04451615
             inSlope: 0
             outSlope: 0
             tangentMode: 0

@@ -14,6 +14,7 @@ public class PlayerController : CharacterBehabiour
     [SerializeField] BulletController m_bullet = null;
     [SerializeField] ScriptableVibration m_damageVibration = null;
 
+    [SerializeField] MonotonyVibration Monotony;
 
     /// <summary>
     /// 配列の要素数が大きいほど振動が変わるタイミングを大きくする

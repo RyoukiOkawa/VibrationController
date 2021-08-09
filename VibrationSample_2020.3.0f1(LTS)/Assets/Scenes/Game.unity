@@ -407,6 +407,8 @@ MonoBehaviour:
     m_vibration: {fileID: 11400000, guid: 7a10974467a1a284ca5f354450ade607, type: 2}
   m_bullet: {fileID: 9119952407231777534, guid: 34a20a12cf39d3343bc42b6a2033b99f, type: 3}
   m_damageVibration: {fileID: 11400000, guid: b7da9cbacabfdd34d878fc87c4f500fc, type: 2}
+  Monotony:
+    m_value: 0
 --- !u!54 &1188346826
 Rigidbody:
   m_ObjectHideFlags: 0

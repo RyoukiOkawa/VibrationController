@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -9,6 +10,8 @@ using Myspace.Vibrations;
 [CustomPropertyDrawer(typeof(VibrationParameter))]
 public class VibrationParameterDrawer : PropertyDrawer
 {
+    float propertyHeight;
+
     VibrationParameter mainProperty;
 
     bool parametorOpen = true;
@@ -16,6 +19,8 @@ public class VibrationParameterDrawer : PropertyDrawer
     bool init = false;
 
     Type propertyType;
+
+    Type[] subPropertyTypes; 
 
     FieldInfo fieldTwoSideEqual;
     FieldInfo fieldLeftValue;
@@ -33,13 +38,16 @@ public class VibrationParameterDrawer : PropertyDrawer
     private void Init(SerializedProperty property)
     {
         propertyType = typeof(VibrationParameter);
-
         mainProperty = (fieldInfo.GetValue(property.serializedObject.targetObject)) as VibrationParameter;
 
+        var vibrationBaseType = typeof(IVibrationValue);
+
+        subPropertyTypes = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(s => s.GetTypes())
+            .Where(t => vibrationBaseType.IsAssignableFrom(t) && t.IsClass && t != vibrationBaseType)
+            .ToArray();
+
         BindingFlags priveteFlags = BindingFlags.InvokeMethod | BindingFlags.NonPublic | BindingFlags.Instance;
-
-
-        init = true;
 
         fieldTwoSideEqual = propertyType.GetField("m_twoSideEqual", priveteFlags);
         fieldLeftValue = propertyType.GetField("m_leftValue", priveteFlags);
@@ -52,41 +60,56 @@ public class VibrationParameterDrawer : PropertyDrawer
         serializedRightValue = property.FindPropertyRelative("m_rightValue");
         serializedEndMode = property.FindPropertyRelative("m_endMode");
         serializedEndTime = property.FindPropertyRelative("m_endTime");
+
+        init = true;
     }
 
     #region main GUI methods
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
+
         if (init == false)
         {
             Init(property);
         }
 
+        var beforPos = position;
 
         EditorGUI.BeginProperty(position, label, property);
 
-        HeaderGUI(position,property,label);
-        BodyGUI(position, property, label);
-        
+        position = HeaderGUI(position,property,label);
+        position = BodyGUI(position, property, label);
+
         EditorGUI.EndProperty();
+
+        propertyHeight = position.y - beforPos.y;
     }
 
 
-    private void HeaderGUI(Rect position, SerializedProperty property, GUIContent label)
+    private Rect HeaderGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
+
+        position.height = EditorGUIUtility.singleLineHeight;
+        position = GetNextLineRect(position);
+        return position;
     }
 
 
-    private void BodyGUI(Rect position, SerializedProperty property, GUIContent label)
+    private Rect BodyGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        parametorOpen = EditorGUILayout.Foldout(parametorOpen, "VibrationParameter");
+        EditorGUI.indentLevel++;
+        parametorOpen = EditorGUI.Foldout(position,parametorOpen, "VibrationParameter");
+        position = GetNextLineRect(position);
 
         if (parametorOpen)
         {
-            PropertySerializedGUI();
+            position = PropertySerializedGUI(position,property,label);
         }
+
+        EditorGUI.indentLevel--;
+        return position;
     }
 
 
@@ -96,71 +119,112 @@ public class VibrationParameterDrawer : PropertyDrawer
     #region Sub GUI methods
 
 
-    private void PropertySerializedGUI()
+    private Rect PropertySerializedGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         EditorGUI.indentLevel++;
 
-        EditorGUILayout.PropertyField(serializedTwoEqual);
+        var height = EditorGUI.GetPropertyHeight(serializedTwoEqual);
+        position.height = height;
+        EditorGUI.PropertyField(position,serializedTwoEqual);
+        position = GetNextLineRect(position);
 
         if ((bool)fieldTwoSideEqual.GetValue(mainProperty))
         {
-            SingleValueSerializedGUI();
+            position = SingleValueSerializedGUI(position, property, label);
         }
         else
         {
-            TwoValueSerializedGUI();
+            position = TwoValueSerializedGUI(position, property, label);
         }
 
-        EndModeSerializedGUI();
-        EndTimeSerializedGUI();
+        position = EndModeSerializedGUI(position, property, label);
+        position = EndTimeSerializedGUI(position, property, label);
 
         EditorGUI.indentLevel--;
+
+        return position;
     }
 
 
-    private void SingleValueSerializedGUI()
+    private Rect SingleValueSerializedGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        EditorGUILayout.PropertyField(serializedLeftValue, new GUIContent("両辺の値"), options : null);
+
+        var height = EditorGUI.GetPropertyHeight(serializedLeftValue);
+        position.height = height;
+        EditorGUI.PropertyField(position,serializedLeftValue, new GUIContent("両辺の値"));
+        position = GetNextLineRect(position);
 
         EditorGUI.indentLevel++;
 
-        if (GUILayout.Button("値を別々する"))
+
+        if (GUI.Button(position,"値を別々する"))
         {
             SeparateValues();
         }
+        position = GetNextLineRect(position);
 
         EditorGUI.indentLevel--;
+
+        return position;
     }
 
 
-    private void TwoValueSerializedGUI()
+    private Rect TwoValueSerializedGUI(Rect position, SerializedProperty property, GUIContent label)
     {
+        var leftHeight = EditorGUI.GetPropertyHeight(serializedLeftValue);
+        var rightHeight = EditorGUI.GetPropertyHeight(serializedRightValue);
+        var width = position.width;
 
-        EditorGUILayout.PropertyField(serializedLeftValue, new GUIContent("左辺の値"),options : null);
-        EditorGUILayout.PropertyField(serializedRightValue, new GUIContent("右辺の値"),options : null);
+        position.height = leftHeight;
+        EditorGUI.PropertyField(position, serializedLeftValue, new GUIContent("左辺の値"));
+        position = GetNextLineRect(position);
+        position.height = rightHeight;
+        EditorGUI.PropertyField(position, serializedRightValue, new GUIContent("右辺の値"));
+        position = GetNextLineRect(position);
+
 
         EditorGUI.indentLevel++;
 
-        EditorGUILayout.BeginHorizontal();
+        var befourButtonPos = position;
 
-        if (GUILayout.Button("値を同じにする(左優先)"))
+        width = position.width;
+
+        position.width = width / 2;
+
+        if (GUI.Button(position,"値を同じにする(左優先)"))
         {
             EqualsValuesBaseLeft();
         }
 
-        if (GUILayout.Button("値を同じにする(右優先)"))
+        position.x += width / 2;
+
+        if (GUI.Button(position,"値を同じにする(右優先)"))
         {
             EqualsValuesBaseRight();
         }
 
-        EditorGUILayout.EndHorizontal();
+        var afterButtonPos = position;
+
+        position = new Rect(
+            x: befourButtonPos.x,
+            y: befourButtonPos.y + afterButtonPos.height,
+            width: befourButtonPos.width,
+            height: EditorGUIUtility.singleLineHeight
+            );
 
         EditorGUI.indentLevel--;
+
+        return position;
     }
 
-    private void EndModeSerializedGUI()
+    private Rect EndModeSerializedGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        EditorGUILayout.PropertyField(serializedEndMode, new GUIContent("EndMode"), options : null);
+        var singleLineHeight = EditorGUIUtility.singleLineHeight;
+
+        position.height = EditorGUI.GetPropertyHeight(serializedEndMode);
+        EditorGUI.PropertyField(position,serializedEndMode, new GUIContent("EndMode"));
+        position = GetNextLineRect(position);
+
 
         var endMode = (VibrationEndMode)fieldEndMode.GetValue(mainProperty);
 
@@ -168,49 +232,69 @@ public class VibrationParameterDrawer : PropertyDrawer
 
         EditorGUI.indentLevel++;
 
-        foreach(VibrationEndMode value in values)
+        foreach (VibrationEndMode value in values)
         {
             var mach = (endMode == value);
 
-            var check = EditorGUILayout.ToggleLeft(new GUIContent(value.ToString()), mach,options : null);
+            var check = EditorGUI.ToggleLeft(position,new GUIContent(value.ToString()),mach);
+            position = GetNextLineRect(position);
 
-            if(check && (mach == false))
+            if (check && (mach == false))
             {
                 fieldEndMode.SetValue(mainProperty, value);
             }
         }
 
         EditorGUI.indentLevel--;
+
+        return position;
     }
 
-    private void EndTimeSerializedGUI()
+    private Rect EndTimeSerializedGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         var serializedName = "EndTime";
 
-        EditorGUILayout.PropertyField(serializedEndTime, new GUIContent("EndTime"), options: null);
+        position.height = EditorGUI.GetPropertyHeight(serializedEndTime);
+        EditorGUI.PropertyField(position,serializedEndTime, new GUIContent("EndTime"));
+        position = GetNextLineRect(position);
 
         var endMode = (VibrationEndMode)fieldEndMode.GetValue(mainProperty);
 
-        
+
 
         if (endMode == VibrationEndMode.Custom)
         {
-            EditorGUILayout.PropertyField(serializedEndTime, options: null);
+            EditorGUI.PropertyField(position,serializedEndTime);
+            position = GetNextLineRect(position);
         }
         else
         {
-            EditorGUILayout.BeginHorizontal();
-
-            EditorGUILayout.LabelField(serializedName);
+            EditorGUI.LabelField(position,serializedName);
+            position = GetNextLineRect(position);
 
             if (endMode == VibrationEndMode.Infinite)
             {
-                EditorGUILayout.LabelField("Infinite : ∞");
+                EditorGUI.LabelField(position,"Infinite : ∞");
+                position = GetNextLineRect(position);
             }
 
-            EditorGUILayout.EndHorizontal();
         }
 
+        return position;
+    }
+
+    public static Rect GetNextLineRect(Rect rect,float ySpace = 0,float? height = null)
+    {
+        var result = rect;
+
+        result.y += rect.height + ySpace;
+
+        result.height =
+            (height is float hei)
+            ? hei
+            : EditorGUIUtility.singleLineHeight;
+
+        return result;
     }
 
     #endregion
@@ -247,4 +331,10 @@ public class VibrationParameterDrawer : PropertyDrawer
     }
 
     #endregion
+
+
+    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    {
+        return propertyHeight;
+    }
 }

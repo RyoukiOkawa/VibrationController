@@ -2,27 +2,28 @@ using UnityEngine;
 
 namespace Myspace.Vibrations
 {
+    [System.Serializable]
     public class MonotonyVibration : IVibrationValue
     {
-        [SerializeField, Header("U“®‚·‚éŽžŠÔ")]
-        [Min(0f)] private float m_vibrationTime = 0;
+        [SerializeField]
+        [Min(0f)] private float? m_endTime = 0;
 
-        [SerializeField, Header("U“®‚Ì’l")]
+        [SerializeField]
         [Range(0f, 1f)] float m_value = 0f;
 
-        public float VibrationTime
+        public float? EndTime
         {
-            get => m_vibrationTime;
+            get => m_endTime;
 
             set
             {
                 if (value < 0)
                 {
-                    m_vibrationTime = 0;
+                    m_endTime = 0;
                 }
                 else
                 {
-                    m_vibrationTime = value;
+                    m_endTime = value;
                 }
             }
         }
@@ -52,7 +53,7 @@ namespace Myspace.Vibrations
         public MonotonyVibration()
         {
             m_value = 0f;
-            m_vibrationTime = 0;
+            m_endTime = 0;
         }
 
         public MonotonyVibration(float value, float time)
@@ -60,15 +61,19 @@ namespace Myspace.Vibrations
             if (value <= 0f)
             {
                 m_value = 0;
-                m_vibrationTime = 0.01f;
+                m_endTime = 0.01f;
             }
             m_value = value;
-            m_vibrationTime = time;
+            m_endTime = time;
         }
 
         public bool FinishCheck(float time)
         {
-            return (time > m_vibrationTime);
+            if (m_endTime is float endTime)
+            {
+                return (time > endTime);
+            }
+            return false;
         }
 
         public float GetVibrationForce(float time)
@@ -82,10 +87,15 @@ namespace Myspace.Vibrations
             var result = new MonotonyVibration()
             {
                 m_value = me.m_value,
-                m_vibrationTime = me.m_vibrationTime
+                m_endTime = me.m_endTime
             };
 
             return result;
+        }
+
+        public IVibrationValue DefaultInstance()
+        {
+            return new MonotonyVibration();
         }
     }
 }

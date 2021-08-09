@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: None
   m_EditorClassIdentifier: 
   m_parameter:
+    m_endTime: 0
+    m_endMode: 0
     m_twoSideEqual: 1
     m_leftValue:
       id: 0
@@ -23,5 +25,4 @@ MonoBehaviour:
     00000000:
       type: {class: MonotonyVibration, ns: Myspace.Vibrations, asm: Assembly-CSharp}
       data:
-        m_vibrationTime: 0
-        m_value: 0
+        m_value: 0.607

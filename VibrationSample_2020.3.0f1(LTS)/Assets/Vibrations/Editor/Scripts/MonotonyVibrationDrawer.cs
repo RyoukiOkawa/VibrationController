@@ -1,11 +1,12 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using UnityEditor;
 
-namespace Myspace.Vibrations
+namespace Myspace.Vibrations.Editor
 {
 
     [CustomPropertyDrawer(typeof(MonotonyVibration))]
@@ -25,12 +26,14 @@ namespace Myspace.Vibrations
         FieldInfo fieldEndTime;
         FieldInfo fieldValue;
 
-
+        float propertyHeight;
 
         private void Init(SerializedProperty property)
         {
             propertyType = typeof(MonotonyVibration);
-            mainProperty = (fieldInfo.GetValue(property.serializedObject.targetObject)) as MonotonyVibration;
+
+            var parent = property.GetParent();
+            mainProperty = fieldInfo.GetValue(parent) as MonotonyVibration;
 
             BindingFlags priveteFlags = BindingFlags.InvokeMethod | BindingFlags.NonPublic | BindingFlags.Instance;
 
@@ -39,7 +42,6 @@ namespace Myspace.Vibrations
 
             fieldEndTime = propertyType.GetField("m_endTime", priveteFlags);
             fieldValue = propertyType.GetField("m_value", priveteFlags);
-
 
             init = true;
         }
@@ -53,29 +55,42 @@ namespace Myspace.Vibrations
                 Init(property);
             }
 
+            var beforPos = position;
+
             EditorGUI.BeginProperty(position, label, property);
 
-            HeaderGUI(position, property, label);
-            BodyGUI(position, property, label);
+            position = HeaderGUI(position, property, label);
+            position = BodyGUI(position, property, label);
 
             EditorGUI.EndProperty();
+
+            propertyHeight = position.y - beforPos.y;
         }
 
 
-        private void HeaderGUI(Rect position, SerializedProperty property, GUIContent label)
+        private Rect HeaderGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
+
+            position.height = EditorGUIUtility.singleLineHeight;
+            position = position.GetNextLineRect();
+            return position;
         }
 
 
-        private void BodyGUI(Rect position, SerializedProperty property, GUIContent label)
+        private Rect BodyGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            parametorOpen = EditorGUI.Foldout(position,parametorOpen, "MonotonyVibration");
+            EditorGUI.indentLevel++;
+            parametorOpen = EditorGUI.Foldout(position, parametorOpen, "MonotonyVibration");
+            position = position.GetNextLineRect();
 
             if (parametorOpen)
             {
-                //PropertySerializedGUI();
+                position = PropertySerializedGUI(position, property, label);
             }
+
+            EditorGUI.indentLevel--;
+            return position;
         }
 
 
@@ -85,20 +100,30 @@ namespace Myspace.Vibrations
         #region Sub GUI methods
 
 
-        private void PropertySerializedGUI()
+        private Rect PropertySerializedGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.indentLevel++;
 
-            ValueSerializedGUI();
+            position = ValueSerializedGUI(position, property, label);
 
             EditorGUI.indentLevel--;
+
+            return position;
         }
 
 
-        private void ValueSerializedGUI()
+        private Rect ValueSerializedGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             var value = (float)fieldValue.GetValue(mainProperty);
-            var afterValue = EditorGUILayout.Slider(value, 0, 1);
+            var afterValue = EditorGUI.Slider(position,value, 0, 1);
+            position = position.GetNextLineRect();
+
+            return position;
+        }
+
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return propertyHeight;
         }
 
 

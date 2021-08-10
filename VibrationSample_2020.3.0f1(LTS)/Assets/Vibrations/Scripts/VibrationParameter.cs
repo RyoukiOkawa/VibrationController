@@ -13,6 +13,8 @@ namespace Myspace.Vibrations
         [SerializeReference, SubclassSelector] IVibrationValue m_rightValue;
 
 
+        [SerializeField] MonotonyVibration MonotonyVibration = new MonotonyVibration();
+
         public bool TwoSideEqual { get => m_twoSideEqual;}
 
         public IVibrationValue LeftValue { get => m_leftValue;}
